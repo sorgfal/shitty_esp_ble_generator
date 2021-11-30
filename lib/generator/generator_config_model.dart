@@ -5,21 +5,28 @@ class GeneratorConfigModel {
   final String manufacturer;
   final String deviceName;
   final List<CharacteristicItem> characteristics;
-
-  GeneratorConfigModel(this.serviceUUID, this.manufacturer, this.deviceName,
-      this.characteristics);
+  String? errors;
+  GeneratorConfigModel({
+    required this.serviceUUID,
+    required this.manufacturer,
+    required this.deviceName,
+    required this.characteristics,
+    this.errors,
+  });
 
   GeneratorConfigModel copyWith({
     String? serviceUUID,
     String? manufacturer,
     String? deviceName,
     List<CharacteristicItem>? characteristics,
+    String? errors,
   }) {
     return GeneratorConfigModel(
-      serviceUUID ?? this.serviceUUID,
-      manufacturer ?? this.manufacturer,
-      deviceName ?? this.deviceName,
-      characteristics ?? this.characteristics,
+      serviceUUID: serviceUUID ?? this.serviceUUID,
+      manufacturer: manufacturer ?? this.manufacturer,
+      deviceName: deviceName ?? this.deviceName,
+      characteristics: characteristics ?? this.characteristics,
+      errors: errors ?? this.errors,
     );
   }
 }
