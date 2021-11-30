@@ -11,9 +11,9 @@ class GeneratorConfigViewModel extends ValueNotifier<GeneratorConfigModel> {
     String template = await rootBundle.loadString("assets/base.tmpl");
     return EspBleFirmwareCodeBuilder(
             EspBleCodePartsBuilder(value.characteristics),
-            deviceName: value.deviceName,
-            manufacturer: value.manufacturer,
-            serviceUUID: value.serviceUUID,
+            deviceName: value.deviceName!,
+            manufacturer: value.manufacturer!,
+            serviceUUID: value.serviceUUID!,
             template: template)
         .build();
   }
@@ -25,7 +25,20 @@ class GeneratorConfigViewModel extends ValueNotifier<GeneratorConfigModel> {
   }
 
   bool _validate() {
-    value = value.copyWith(errors: "Чёт не хватает");
+    if (value.serviceUUID == null) {
+      value = value.copyWith(errors: "UUID сервиса пуст");
+    }
+    if (value.deviceName == null) {
+      value = value.copyWith(errors: "Название устройства пусто!!");
+    }
+    if (value.manufacturer == null) {
+      value = value.copyWith(errors: "А как же производитель?");
+    }
+    if (value.characteristics.isEmpty) {
+      value =
+          value.copyWith(errors: "А характеристики ? Оно без них не работает");
+    }
+
     return false;
   }
 
@@ -39,4 +52,8 @@ class GeneratorConfigViewModel extends ValueNotifier<GeneratorConfigModel> {
         ..click();
     }
   }
+
+  final TextEditingController deviceName = TextEditingController();
+  final TextEditingController manfucaturer = TextEditingController();
+  final TextEditingController serviceUUID = TextEditingController();
 }
