@@ -54,4 +54,25 @@ class CharacteristicItem {
     ${hasCallback ? "$_propertyPointerName->setCallbacks(new $_propertyCallbackClassName());" : ""}
     ''';
   }
+
+  @override
+  bool operator ==(Object other) {
+    if (identical(this, other)) return true;
+
+    return other is CharacteristicItem &&
+        other.name == name &&
+        other.type == type &&
+        other.writable == writable &&
+        other.notifiable == notifiable &&
+        other.uuid == uuid;
+  }
+
+  @override
+  int get hashCode {
+    return name.hashCode ^
+        type.hashCode ^
+        writable.hashCode ^
+        notifiable.hashCode ^
+        uuid.hashCode;
+  }
 }
