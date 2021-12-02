@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:uuid/uuid.dart';
 
 class CharacteristicItem {
@@ -14,8 +16,8 @@ class CharacteristicItem {
   final bool notifiable;
   late String uuid;
   CharacteristicItem(this.name, this.type,
-      {this.writable = false, this.notifiable = false}) {
-    uuid = Uuid().v4();
+      {this.writable = false, this.notifiable = false, String? inuuid}) {
+    uuid = inuuid ?? Uuid().v4();
   }
 
   String get _uuidConstName => name.toUpperCase() + "_UUID";
@@ -75,4 +77,35 @@ class CharacteristicItem {
         notifiable.hashCode ^
         uuid.hashCode;
   }
+
+  Map<String, dynamic> toMap() {
+    return {
+      'name': name,
+      'type': type.toString(),
+      'writable': writable,
+      'notifiable': notifiable,
+      'uuid': uuid,
+    };
+  }
+
+  String toJson() => json.encode(toMap());
+
+  factory CharacteristicItem.fromMap(Map<String, dynamic> map) {
+    return CharacteristicItem(
+      map['name'],
+      map['type'] == 'int'
+          ? int
+          : map['type'] == "String"
+              ? String
+              : map['type'] == "bool"
+                  ? bool
+                  : int,
+      writable: map['writable'],
+      notifiable: map['notifiable'],
+      inuuid: map['uuid'],
+    );
+  }
+
+  factory CharacteristicItem.fromJson(String source) =>
+      CharacteristicItem.fromMap(json.decode(source));
 }

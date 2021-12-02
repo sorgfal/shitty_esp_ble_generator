@@ -42,15 +42,15 @@ class GeneratorConfigViewBody extends StatelessWidget {
             Padding(
               padding: const EdgeInsets.only(top: 40.0),
               child: SizedBox(
-                height: 60,
+                height: 71,
                 child: Row(
                   crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: [
                     Flexible(
-                      flex: 10,
+                      flex: 7,
                       child: CustomTextField(
                         label: "Название производителя",
-                        controller: viewModel.manfucaturer,
+                        controller: viewModel.manufacturer,
                         formatter: RegExp('[a-zA-Z]'),
                       ),
                     ),
@@ -58,7 +58,7 @@ class GeneratorConfigViewBody extends StatelessWidget {
                       flex: 1,
                     ),
                     Flexible(
-                      flex: 10,
+                      flex: 7,
                       child: CustomTextField(
                         label: "Название устройства",
                         controller: viewModel.deviceName,
@@ -70,12 +70,22 @@ class GeneratorConfigViewBody extends StatelessWidget {
                     ),
                     Flexible(
                       flex: 10,
-                      child: CustomTextField(
-                        label: "Уникальный id (UUID v4)",
-                        controller: viewModel.serviceUUID,
-                        formatter: RegExp('[a-zA-Z0-9-]'),
+                      child: Column(
+                        children: [
+                          CustomTextField(
+                            label: "Уникальный id (UUID v4)",
+                            controller: viewModel.serviceUUID,
+                            formatter: RegExp('[a-zA-Z0-9-]'),
+                          ),
+                          TextButton(
+                            onPressed: () {
+                              viewModel.generateUUID();
+                            },
+                            child: Text('Сгенерировать UUID'),
+                          )
+                        ],
                       ),
-                    )
+                    ),
                   ],
                 ),
               ),
@@ -87,7 +97,7 @@ class GeneratorConfigViewBody extends StatelessWidget {
                       characteristicItem: e, viewModel: viewModel))
                   .toList()
                 ..add(CharacteristicAdditionTile(viewModel: viewModel)),
-            ))
+            )),
           ],
         ),
       ),

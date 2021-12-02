@@ -54,4 +54,8 @@ class EspBleCodePartsBuilder {
     result += _generateCharacteristicAssignmentDefinitions();
     return result;
   }
+
+  String _generateScheme() {
+    return properties.map((e) => e.toJson()).join(", \n");
+  }
 }

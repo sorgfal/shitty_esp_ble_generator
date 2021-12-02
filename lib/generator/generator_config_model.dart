@@ -6,12 +6,14 @@ class GeneratorConfigModel {
   final String? deviceName;
   final List<CharacteristicItem> characteristics;
   String? errors;
+  String? scheme;
   GeneratorConfigModel({
     this.serviceUUID,
     this.manufacturer,
     this.deviceName,
     this.characteristics = const [],
     this.errors,
+    this.scheme,
   });
 
   GeneratorConfigModel copyWith({
@@ -20,6 +22,7 @@ class GeneratorConfigModel {
     String? deviceName,
     List<CharacteristicItem>? characteristics,
     String? errors,
+    String? scheme,
   }) {
     return GeneratorConfigModel(
       serviceUUID: serviceUUID ?? this.serviceUUID,
@@ -27,6 +30,7 @@ class GeneratorConfigModel {
       deviceName: deviceName ?? this.deviceName,
       characteristics: characteristics ?? this.characteristics,
       errors: errors ?? this.errors,
+      scheme: scheme ?? this.scheme,
     );
   }
 }

@@ -1,26 +1,33 @@
+import 'dart:convert';
+import 'dart:typed_data';
+
+import 'package:archive/archive_io.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:shitty_esp_ble_generator/arduino_firmware_generator/esp_ble_code_builder.dart';
+import 'package:shitty_esp_ble_generator/arduino_firmware_generator/esp_ble_project_builder.dart';
 import 'package:shitty_esp_ble_generator/arduino_firmware_generator/property_item.dart';
 import 'package:shitty_esp_ble_generator/generator/generator_config_model.dart';
+import 'package:uuid/uuid.dart';
 import 'dart:html' as webFile;
 
 class GeneratorConfigViewModel extends ValueNotifier<GeneratorConfigModel> {
   GeneratorConfigViewModel(GeneratorConfigModel value) : super(value);
-  Future<String> _generateSourceCode() async {
+  Future<Map<String, String>> _generateSourceCode() async {
     value = value.copyWith(
       deviceName: deviceName.text,
-      manufacturer: manfucaturer.text,
+      manufacturer: manufacturer.text,
       serviceUUID: serviceUUID.text,
     );
     String template = await rootBundle.loadString("assets/base.tmpl");
-    return EspBleFirmwareCodeBuilder(
-            EspBleCodePartsBuilder(value.characteristics),
+
+    return EspBleProjectBuilder(
+            firmwareTemplate: template,
             deviceName: value.deviceName!,
             manufacturer: value.manufacturer!,
             serviceUUID: value.serviceUUID!,
-            template: template)
+            properties: value.characteristics)
         .build();
   }
 
@@ -41,7 +48,7 @@ class GeneratorConfigViewModel extends ValueNotifier<GeneratorConfigModel> {
           value.copyWith(errors: "Разве это название ? (минимум 3 символа)");
       return false;
     }
-    if (manfucaturer.text.length < 3) {
+    if (manufacturer.text.length < 3) {
       value =
           value.copyWith(errors: "А как же производитель? (минимум 3 символа)");
       return false;
@@ -56,19 +63,26 @@ class GeneratorConfigViewModel extends ValueNotifier<GeneratorConfigModel> {
     return true;
   }
 
-  void _onGenerated(String sourceCode) {
+  void _onGenerated(Map<String, String> sourceCode) {
+    var archive = Archive();
+    sourceCode.forEach((name, code) {
+      var bytes = Uint8List.fromList(code.codeUnits);
+      archive.addFile(ArchiveFile.noCompress(name, bytes.length, bytes));
+    });
+    var zippedArchive = ZipEncoder().encode(archive);
+
     if (kIsWeb) {
-      var blob = webFile.Blob([sourceCode], 'text/plain', 'native');
+      var blob = webFile.Blob([zippedArchive!], 'application/zip', 'native');
 
       var anchorElement = webFile.AnchorElement(
           href: webFile.Url.createObjectUrlFromBlob(blob).toString())
-        ..setAttribute("download", "sorgalEspBleFirmware.c")
+        ..setAttribute("download", "project.zip")
         ..click();
     }
   }
 
   final TextEditingController deviceName = TextEditingController();
-  final TextEditingController manfucaturer = TextEditingController();
+  final TextEditingController manufacturer = TextEditingController();
   final TextEditingController serviceUUID = TextEditingController();
 
   void addCharacteristic(CharacteristicItem i) {
@@ -79,5 +93,39 @@ class GeneratorConfigViewModel extends ValueNotifier<GeneratorConfigModel> {
     value = value.copyWith(
         characteristics:
             value.characteristics.where((element) => element != i).toList());
+  }
+
+  void generateUUID() {
+    serviceUUID.text = Uuid().v4();
+  }
+
+  Future<void> doImport(String scheme) async {
+    Map parsedJson;
+    try {
+      parsedJson = jsonDecode(scheme);
+    } catch (e) {
+      throw Exception('Неверный формат json');
+    }
+    if (!parsedJson.containsKey('deviceName')) {
+      throw Exception('Нет deviceName');
+    }
+    if (!parsedJson.containsKey('manufacturer')) {
+      throw Exception('Нет manufacturer');
+    }
+    if (!parsedJson.containsKey('serviceUUID')) {
+      throw Exception('Нет serviceUUID');
+    }
+    if (!parsedJson.containsKey('characteristics') ||
+        parsedJson['characteristics'] is! List) {
+      throw Exception('Нет characteristics');
+    }
+    deviceName.text = parsedJson['deviceName'];
+    manufacturer.text = parsedJson['manufacturer'];
+    serviceUUID.text = parsedJson['serviceUUID'];
+    value = value.copyWith(
+        characteristics: (parsedJson['characteristics'] as List)
+            .map<CharacteristicItem>((item) {
+      return CharacteristicItem.fromMap(item);
+    }).toList());
   }
 }

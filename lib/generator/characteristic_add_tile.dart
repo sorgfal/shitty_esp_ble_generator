@@ -3,6 +3,8 @@ import 'package:shitty_esp_ble_generator/arduino_firmware_generator/property_ite
 import 'package:shitty_esp_ble_generator/generator/generator_config_view_model.dart';
 import 'package:shitty_esp_ble_generator/widgets/custom_text_field.dart';
 
+import 'characteristic_import_dialog.dart';
+
 class CharacteristicAdditionTile extends StatefulWidget {
   final GeneratorConfigViewModel viewModel;
   const CharacteristicAdditionTile({Key? key, required this.viewModel})
@@ -32,6 +34,10 @@ class _CharacteristicAdditionTileState
     }
   }
 
+  import() {
+    CharacteristicImportDialog.show(context, widget.viewModel);
+  }
+
   bool _validate() {
     if (name.text.length < 3) {
       return false;
@@ -56,7 +62,9 @@ class _CharacteristicAdditionTileState
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   Text('Добавь новую характеристику'),
-                  TextButton(onPressed: add, child: Text('Добавить'))
+                  Spacer(),
+                  TextButton(onPressed: add, child: Text('Добавить')),
+                  TextButton(onPressed: import, child: Text('Импортировать')),
                 ],
               ),
               Row(

@@ -1,12 +1,25 @@
+/*
+// PROPS SCHEME 
+{
+    "deviceName": "%deviceName",
+    "manufacturer": "%manufacturer",
+    "serviceUUID": "%serviceUUID",
+    "characteristics": [
+      %scheme   
+   ]
+}
+
+// PROPS SCHEME
+*/
 #include <BLEDevice.h>
 #include <BLEServer.h>
 #include <BLEUtils.h>
 #include <BLE2902.h>
 
-#define SERVICE_UUID  "$serviceUUID" // ID сервиса
+#define SERVICE_UUID  "%serviceUUID" // ID сервиса
 
-#define DEVICE_MANUFACTURER "$manufacturer" // Имя "Производителя"
-#define DEVICE_NAME         "$deviceName" // Имя устройства
+#define DEVICE_MANUFACTURER "%manufacturer" // Имя "Производителя"
+#define DEVICE_NAME         "%deviceName" // Имя устройства
 %constDefinition
 %BLECharacteristic
 %callbacksDefenition
