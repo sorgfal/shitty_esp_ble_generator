@@ -1,16 +1,21 @@
 # shitty_esp_ble_generator
 
-A new Flutter project.
+Маленький генератор кода для ESP32 на платформе arduino.
+Данный генератор собирает прошивку с BLE сервером
 
-## Getting Started
+Фичи:
+- Автогенерация UUID для характеристик (Каждое создание характеристики создает новый UUID)
+- Автогенерация подписки на изменение характеристик в прошивке
+- Автопарсинг характеристик в соотвествии с указанным типом. Удобно 
+- Генерация UUID для устройства и сервиса. Не будет конфликтов с заводскими устройствами
+- Импорт схемы характеристик, это позволит загрузить схему старой прошивки и изменить её, не теряя UUID
+  
+Планируется:
+- Автогенерация Dart кода
+- Переделка UI по красоте
+- Хранение и управление наборов характеристиками
 
-This project is a starting point for a Flutter application.
 
-A few resources to get you started if this is your first Flutter project:
 
-- [Lab: Write your first Flutter app](https://flutter.dev/docs/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://flutter.dev/docs/cookbook)
-
-For help getting started with Flutter, view our
-[online documentation](https://flutter.dev/docs), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+## Демо
+[Демо](https://sorgfal.github.io/), 
