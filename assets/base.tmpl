@@ -1,25 +1,12 @@
-/*
-// PROPS SCHEME 
-{
-    "deviceName": "%deviceName",
-    "manufacturer": "%manufacturer",
-    "serviceUUID": "%serviceUUID",
-    "characteristics": [
-      %scheme   
-   ]
-}
-
-// PROPS SCHEME
-*/
 #include <BLEDevice.h>
 #include <BLEServer.h>
 #include <BLEUtils.h>
 #include <BLE2902.h>
 
-#define SERVICE_UUID  "%serviceUUID" // ID сервиса
+#define SERVICE_UUID  "%serviceUUID"
 
-#define DEVICE_MANUFACTURER "%manufacturer" // Имя "Производителя"
-#define DEVICE_NAME         "%deviceName" // Имя устройства
+#define DEVICE_MANUFACTURER "%manufacturer"  
+#define DEVICE_NAME         "%deviceName" 
 %constDefinition
 %BLECharacteristic
 %callbacksDefenition
@@ -28,12 +15,12 @@
 
 class MyServerCallbacks: public BLEServerCallbacks {
     void onConnect(BLEServer* pServer) {
-      // Обработка подключения телефона к устройству
+      // On external device connection handler
       Serial.println("Client Connected");
     };
 
     void onDisconnect(BLEServer* pServer) {
-      // Обработка отключения
+      // On external device disconnection handler
       Serial.println("Client Disconnected");
     }
 };
@@ -41,31 +28,29 @@ class MyServerCallbacks: public BLEServerCallbacks {
 
 void setup() {
   Serial.begin(115200);
-  // Генерация имени
+  // device name generation
   String devName = DEVICE_NAME; 
   String chipId = String((uint32_t)(ESP.getEfuseMac() >> 24), HEX);
   devName += '_';
   devName += chipId;
  
-   // Инициализация девайса  c уникальным именем
+   // BLEDevice connection initialization
   BLEDevice::init(devName.c_str()); 
 
-  // Создаем сервер
+  // Server creation
   BLEServer *pServer = BLEDevice::createServer();
-  
-  // Подключаем обработчики подключения и отключения
   pServer->setCallbacks(new MyServerCallbacks()); 
 
-  // Создаем сервис 
+  // Service creation
   BLEService *pService = pServer->createService(SERVICE_UUID); 
 
   %characteristicAssignment
 
-  // Стартуем сервис
+  // Service start
   pService->start();
 
 
-  // Настройка вещания
+  // Broadcast setup
   BLEAdvertising *pAdvertising = pServer->getAdvertising();
 
   BLEAdvertisementData adv;
@@ -76,7 +61,7 @@ void setup() {
   adv2.setCompleteServices(BLEUUID(SERVICE_UUID));
   pAdvertising->setScanResponseData(adv2);
   
-  // Начало вещания
+  // Broadcast start
   pAdvertising->start();
 
 }

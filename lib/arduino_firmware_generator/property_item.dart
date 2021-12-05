@@ -42,11 +42,12 @@ class CharacteristicItem {
     return '''class $_propertyCallbackClassName : public BLECharacteristicCallbacks {
   void onWrite(BLECharacteristic *pCharacteristic) {
       std::string rawValue = pCharacteristic->getValue();
+    /// Characteristic value parsing
     ${type == int ? 'int value = atoi(rawValue.c_str());' : ""}${type == String ? 'const char* value = rawValue.c_str();' : ""}${type == bool ? 'bool value = atoi(rawValue.c_str())==1;' : ""}
-    /// Здесь обработка изменения свойств
+    /// Characteristic changing handling
 
-    /// Здесь обработка изменения свойств кончается 
-    ${notifiable ? 'pCharacteristic->notify()' : null};
+    /// Characteristic changing handling end
+    ${notifiable ? 'pCharacteristic->notify()' : ""};
   }
 };''';
   }

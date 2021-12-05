@@ -74,7 +74,7 @@ class GeneratorConfigViewModel extends ValueNotifier<GeneratorConfigModel> {
     if (kIsWeb) {
       var blob = webFile.Blob([zippedArchive!], 'application/zip', 'native');
 
-      var anchorElement = webFile.AnchorElement(
+      webFile.AnchorElement(
           href: webFile.Url.createObjectUrlFromBlob(blob).toString())
         ..setAttribute("download", "project.zip")
         ..click();
@@ -95,9 +95,7 @@ class GeneratorConfigViewModel extends ValueNotifier<GeneratorConfigModel> {
             value.characteristics.where((element) => element != i).toList());
   }
 
-  void generateUUID() {
-    serviceUUID.text = Uuid().v4();
-  }
+  void generateUUID() => serviceUUID.text = Uuid().v4();
 
   Future<void> doImport(String scheme) async {
     Map parsedJson;

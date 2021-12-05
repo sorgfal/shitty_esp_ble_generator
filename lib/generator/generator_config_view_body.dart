@@ -78,9 +78,7 @@ class GeneratorConfigViewBody extends StatelessWidget {
                             formatter: RegExp('[a-zA-Z0-9-]'),
                           ),
                           TextButton(
-                            onPressed: () {
-                              viewModel.generateUUID();
-                            },
+                            onPressed: viewModel.generateUUID,
                             child: Text('Сгенерировать UUID'),
                           )
                         ],

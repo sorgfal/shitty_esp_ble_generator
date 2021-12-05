@@ -41,8 +41,6 @@ class _CharacteristicAdditionTileState
   bool _validate() {
     if (name.text.length < 3) {
       return false;
-      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-          content: Text('Имя должно содержать больше 3 символов')));
     }
     return true;
   }
