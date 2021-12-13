@@ -45,15 +45,16 @@ class CharacteristicItem {
     /// Characteristic value parsing
     ${type == int ? 'int value = atoi(rawValue.c_str());' : ""}${type == String ? 'const char* value = rawValue.c_str();' : ""}${type == bool ? 'bool value = atoi(rawValue.c_str())==1;' : ""}
     /// Characteristic changing handling
-
+     Serial.print("$_propertyPointerName");
+    Serial.println(rawValue.c_str());
     /// Characteristic changing handling end
-    ${notifiable ? 'pCharacteristic->notify()' : ""};
+    ${notifiable ? 'pCharacteristic->notify();' : ""}
   }
 };''';
   }
 
   String getCharacteristicAssignment() {
-    return '''$_propertyPointerName = pService->createCharacteristic($_uuidConstName,BLECharacteristic::PROPERTY_READ${writable ? "| BLECharacteristic::PROPERTY_WRITE" : ""} ${notifiable ? "|BLECharacteristic::PROPERTY_NOTIFY" : ""});
+    return '''$_propertyPointerName = pService->createCharacteristic($_uuidConstName,BLECharacteristic::PROPERTY_READ|BLECharacteristic::PROPERTY_INDICATE${writable ? "| BLECharacteristic::PROPERTY_WRITE" : ""} ${notifiable ? "|BLECharacteristic::PROPERTY_NOTIFY" : ""});
     ${hasCallback ? "$_propertyPointerName->setCallbacks(new $_propertyCallbackClassName());" : ""}
     ''';
   }

@@ -42,12 +42,11 @@ void setup() {
   pServer->setCallbacks(new MyServerCallbacks()); 
 
   // Service creation
-  BLEService *pService = pServer->createService(SERVICE_UUID); 
+   BLEService *pService = pServer->createService(BLEUUID(SERVICE_UUID), 110, 0);
 
   %characteristicAssignment
 
-  // Service start
-  pService->start();
+  
 
 
   // Broadcast setup
@@ -61,6 +60,8 @@ void setup() {
   adv2.setCompleteServices(BLEUUID(SERVICE_UUID));
   pAdvertising->setScanResponseData(adv2);
   
+  // Service start
+  pService->start();
   // Broadcast start
   pAdvertising->start();
 
